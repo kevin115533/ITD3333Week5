@@ -8,19 +8,30 @@ using System.Web.UI.WebControls;
 public partial class _Default : System.Web.UI.Page
 {
     public int postCounter = 0;
+    public object myUser;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         postCountLbl.Text = postCounter.ToString();
         postCountLbl.ForeColor = System.Drawing.Color.Red;
+        postedNameLbl.Visible = false;
+        postNameLbl.Visible = false;
         if (this.IsPostBack)
         {
+            firstLbl.Visible = false;
+            firstTxtbox.Visible = false;
+            lastLbl.Visible = false;
+            lastTxtbox.Visible = false;
+            postedNameLbl.Visible = true;
+            postNameLbl.Visible = true;
+            myUser = (MyUserName)ViewState["user"];
             
         }
     }
 
     protected void Page_PreRender(Object sender, EventArgs e)
     {
-        //ViewState["user"] = user;
+        ViewState["user"] = myUser;
     }
 
     protected void cmdPostback_Click(object sender, EventArgs e)
@@ -37,12 +48,12 @@ public partial class _Default : System.Web.UI.Page
         ViewState["Counter"] = postCounter;
         postCountLbl.Text = postCounter.ToString();
         postCountLbl.ForeColor = System.Drawing.Color.Red;
-        UserName user = new UserName(firstTxtbox.ToString(), lastTxtbox.ToString());
-        user = (UserName)ViewState["user"];
+        MyUserName myUser = new MyUserName(firstTxtbox.ToString(), lastTxtbox.ToString());
+        ViewState["user"] = myUser;
     }
 
     [Serializable]
-    public class UserName
+    public class MyUserName
     {
         private string firstName;
         public string FirstName
@@ -50,16 +61,17 @@ public partial class _Default : System.Web.UI.Page
             get { return firstName; }
             set { firstName = value; }
         }
+
         private string lastName;
         public string LastName
         {
             get { return lastName; }
             set { lastName = value; }
         }
-        public UserName(string first, string last)
+        public MyUserName(string first, string last)
         {
             FirstName = first;
             LastName = last;
-        }
+        }      
     }
 }
